@@ -423,15 +423,11 @@ class PrawnBlasterWorker(Worker):
         Returns:
             bool: `True` is abort is successful.
         """
-        if not self.is_master_pseudoclock:
-            # Only need to send abort signal if we have told the PrawnBlaster to wait
-            # for a hardware trigger. Otherwise it's just been programmed with
-            # instructions and there is nothing we need to do to abort.
-            self.prawnblaster.write(b"abort\r\n")
-            assert self.prawnblaster.readline().decode() == "ok\r\n"
-            # loop until abort complete
-            while self.read_status()[0] != 5:
-                time.sleep(0.5)
+        self.prawnblaster.write(b"abort\r\n")
+        assert self.prawnblaster.readline().decode() == "ok\r\n"
+        # loop until abort complete
+        while self.read_status()[0] != 5:
+            time.sleep(0.5)
         return True
 
     def abort_transition_to_buffered(self):
