@@ -534,7 +534,10 @@ class AndorCam(object):
         # enable the frame transfer mode.
         if self.acquisition_mode == 'kinetic_series':
             if self.acquisition_attributes['crop']:
-                SetOutputAmplifier(0)
+                if self.acquisition_attributes['emccd']:
+                    SetOutputAmplifier(0)
+                else:
+                    SetOutputAmplifier(1)
                 SetFrameTransferMode(1)
                 SetIsolatedCropModeEx(
                     int(1),
