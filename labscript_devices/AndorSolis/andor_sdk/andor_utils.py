@@ -43,6 +43,9 @@ class AndorCam(object):
         'water_cooling': False,
         'temperature': 20,
         'temperature_tol': None,
+        'vertical_shift': 1,
+        'ad_channel': None,
+        'readout_rate': None
     }
 
     def __init__(self, name='andornymous'):
@@ -268,25 +271,30 @@ class AndorCam(object):
                 if custom_option == 0:
                     SetVSAmplitude(3)
 
-    def setup_horizontal_shift(self, custom_option=None):
+    def setup_horizontal_shift(self, ad_number=None, readout_rate_index=None):
         """ Calls the functions needed to adjust the horizontal
         shifting speed on the sensor for a given acquisition"""
 
-        # Sets to the fastest one by default to reduce download time
-        # but this probably plays down on the readout noise
-        intermediate_speed, self.index_hs_speed, ad_number = 0, 0, 0
-        for channel in range(GetNumberADChannels()):
-            n_allowed_speeds = GetNumberHSSpeeds(channel, 0)
-            for speed_index in range(n_allowed_speeds):
-                speed = GetHSSpeed(channel, 0, speed_index)
-                if speed > intermediate_speed:
-                    intermediate_speed = speed
-                    self.index_hs_speed = speed_index
-                    ad_number = channel
+        if ad_number is None or readout_rate_index is None:
+            # Sets to the fastest one by default to reduce download time
+            # but this probably plays down on the readout noise
+            intermediate_speed, self.index_hs_speed, ad_number = 0, 0, 0
+            for channel in range(GetNumberADChannels()):
+                n_allowed_speeds = GetNumberHSSpeeds(channel, 0)
+                for speed_index in range(n_allowed_speeds):
+                    speed = GetHSSpeed(channel, 0, speed_index)
+                    if speed > intermediate_speed:
+                        intermediate_speed = speed
+                        self.index_hs_speed = speed_index
+                        ad_number = channel
 
-        self.hs_speed = intermediate_speed
-        SetADChannel(ad_number)
-        SetHSSpeed(0, self.index_hs_speed)
+            self.hs_speed = intermediate_speed
+            SetADChannel(ad_number)
+            SetHSSpeed(0, self.index_hs_speed)
+        else:
+            SetADChannel(ad_number)
+            self.index_hs_speed = readout_rate_index
+            SetHSSpeed(0, self.index_hs_speed)
         # Get actual horizontal shifting (i.e. digitization) speed
         self.horizontal_shift_speed = GetHSSpeed(ad_number, 0, self.index_hs_speed)
      
@@ -340,10 +348,11 @@ class AndorCam(object):
         self.setup_trigger(**self.acquisition_attributes)
 
         # Configure horizontal shifting (serial register clocks)
-        self.setup_horizontal_shift()
+        self.setup_horizontal_shift(self.acquisition_attributes['ad_channel'],
+                                    self.acquisition_attributes['readout_rate'])
 
         # Configure vertical shifting (image and storage area clocks)
-        self.setup_vertical_shift()
+        self.setup_vertical_shift(custom_option=self.acquisition_attributes['vertical_shift'])
 
         SetAcquisitionMode(modes[self.acquisition_mode])
 
