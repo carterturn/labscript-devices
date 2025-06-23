@@ -28,6 +28,12 @@ class AndorCamera(object):
     def set_attribute(self, name, value):
         self.attributes[name] = value
 
+        if name == 'cooldown' or name == 'temperature':
+            # Start cooldown as early as we know the temperature
+            self.camera.enable_cooldown(self.attributes['temperature'],
+                                        self.attributes['water_cooling'],
+                                        False)
+
     def get_attribute_names(self, visibility_level, writeable_only=True):
         return list(self.attributes.keys())
 

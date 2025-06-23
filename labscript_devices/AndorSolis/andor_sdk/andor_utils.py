@@ -42,6 +42,7 @@ class AndorCam(object):
         'cooldown': False,
         'water_cooling': False,
         'temperature': 20,
+        'temperature_tol': None,
     }
 
     def __init__(self, name='andornymous'):
@@ -128,7 +129,7 @@ class AndorCam(object):
             rich_print(f"   emgain_caps: {self.emgain_caps}", color='lightsteelblue')
 
     def enable_cooldown(
-        self, temperature_setpoint=20, water_cooling=False, wait_until_stable=False
+            self, temperature_setpoint=20, water_cooling=False, wait_until_stable=False, temperature_tol=None,
     ):
         """ Calls all the functions relative to temperature control
         and stabilization. Enables cooling down, waits for stabilization
@@ -171,6 +172,13 @@ class AndorCam(object):
             while 'TEMP_STABILIZED' not in self.temperature_status:
                 if self.chatty:
                     print(f"Temperature not stable: T = {self.temperature}")
+                time.sleep(thermal_timeout)
+                self.temperature, self.temperature_status = GetTemperatureF()
+        elif temperature_tol is not None:
+            while (self.temperature > temperature_setpoint + temperature_tol
+                   or self.temperature < temperature_setpoint - temperature_tol):
+                if self.chatty:
+                    print(f"Temperature not within tolerance: T = {self.temperature}")
                 time.sleep(thermal_timeout)
                 self.temperature, self.temperature_status = GetTemperatureF()
 
@@ -302,10 +310,13 @@ class AndorCam(object):
             self.enable_emccd(self.acquisition_attributes['emccd_gain'])
 
         if self.acquisition_attributes['cooldown']:
+            # If no temperature tolerance provided, wait for temperature to stabilize
+            wait_stable = self.acquisition_attributes['temperature_tol'] is None
             self.enable_cooldown(
                 self.acquisition_attributes['temperature'],
                 self.acquisition_attributes['water_cooling'],
-                wait_until_stable = True,
+                wait_until_stable = wait_stable,
+                temperature_tol = self.acquisition_attributes['temperature_tol'],
             )
 
             # Get current temperature and temperature status
