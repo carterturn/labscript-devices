@@ -47,8 +47,8 @@ class AndorException(Exception):
     pass
 
 def check_status(call_return):
-    """ Queries the function call status. Based on the 
-        return message, errors are handled. More info about 
+    """ Queries the function call status. Based on the
+        return message, errors are handled. More info about
         the raw messages can be found in the SDK documentation."""
 
     if not call_return in _SC.keys():
@@ -168,11 +168,11 @@ def EnableKeepCleans(mode):
         determines if this function can be called for the camera. """
     return None
 
-@uint_winapi([ctypes.c_int])
-def EnableSensorCompensation(iMode):
-    """ This function enables/disables the on camera 
-        sensor compensation. """
-    return None
+# @uint_winapi([ctypes.c_int])
+# def EnableSensorCompensation(iMode):
+    # """ This function enables/disables the on camera
+        # sensor compensation. """
+    # return None
 
 
 @uint_winapi()
@@ -237,66 +237,66 @@ def GetImagesPerDMA():
     check_status(result)
     return int(images.value)
 
-@uint_winapi([ctypes.c_int])
-def Filter_SetAveragingFactor(averagingFactor):
-    """ Sets the averaging factor to be used with the 
-        recursive filter. For information on the various 
-        data averaging filters available see DATA AVERAGING 
-        FILTERS in the Special Guides section of the manual. """
-    return None
+# @uint_winapi([ctypes.c_int])
+# def Filter_SetAveragingFactor(averagingFactor):
+    # """ Sets the averaging factor to be used with the
+        # recursive filter. For information on the various
+        # data averaging filters available see DATA AVERAGING
+        # FILTERS in the Special Guides section of the manual. """
+    # return None
 
 
-@uint_winapi([ctypes.c_int])
-def Filter_SetAveragingFrameCount(frames):
-    """ Sets the number of frames to be used when using 
-        the frame averaging filter. For information on the 
-        various data averaging filters available see DATA 
-        AVERAGING FILTERS in the Special Guides section of 
-        the manual. """
-    return None
+# @uint_winapi([ctypes.c_int])
+# def Filter_SetAveragingFrameCount(frames):
+    # """ Sets the number of frames to be used when using
+        # the frame averaging filter. For information on the
+        # various data averaging filters available see DATA
+        # AVERAGING FILTERS in the Special Guides section of
+        # the manual. """
+    # return None
 
 
-@uint_winapi([ctypes.c_int])
-def Filter_SetDataAveragingMode(mode):
-    """ Sets the current data averaging mode. For information 
-        on the various data averaging filters available see 
-        DATA AVERAGING FILTERS in the Special Guides section 
-        of the manual. 
-        Valid options are:  0 – No Averaging Filter
-                            5 – Recursive Averaging Filter
-                            6 – Frame Averaging Filter """
-    return None
+# @uint_winapi([ctypes.c_int])
+# def Filter_SetDataAveragingMode(mode):
+    # """ Sets the current data averaging mode. For information
+        # on the various data averaging filters available see
+        # DATA AVERAGING FILTERS in the Special Guides section
+        # of the manual.
+        # Valid options are:  0 – No Averaging Filter
+                            # 5 – Recursive Averaging Filter
+                            # 6 – Frame Averaging Filter """
+    # return None
 
 
-@uint_winapi([ctypes.c_int])
-def Filter_SetMode(mode):
-    """ Set the Noise Filter to use; For information on 
-        the various spurious noise filters available see 
-        SPURIOUS NOISE FILTERS in the Special Guides section 
-        of the manual. 
-        Valid options are:  0 – No Filter
-                            1 – Median Filter
-                            2 – Level Above Filter
-                            3 – Interquartile Range Filter
-                            4 – Noise Threshold Filter. """
-    return None
+# @uint_winapi([ctypes.c_int])
+# def Filter_SetMode(mode):
+    # """ Set the Noise Filter to use; For information on
+        # the various spurious noise filters available see
+        # SPURIOUS NOISE FILTERS in the Special Guides section
+        # of the manual.
+        # Valid options are:  0 – No Filter
+                            # 1 – Median Filter
+                            # 2 – Level Above Filter
+                            # 3 – Interquartile Range Filter
+                            # 4 – Noise Threshold Filter. """
+    # return None
 
 
-@uint_winapi([ctypes.c_float])
-def Filter_SetThreshold(threshold):
-    """ Sets the threshold value for the Noise Filter. For 
-        information on the various spurious noise filters 
-        available see SPURIOUS NOISE FILTERS in the Special 
-        Guides section of the manual. 
-        Valid values are:   0 – 65535 for Level Above filter.
-                            0 – 10 for all other filters. """
-    return None
+# @uint_winapi([ctypes.c_float])
+# def Filter_SetThreshold(threshold):
+    # """ Sets the threshold value for the Noise Filter. For
+        # information on the various spurious noise filters
+        # available see SPURIOUS NOISE FILTERS in the Special
+        # Guides section of the manual.
+        # Valid values are:   0 – 65535 for Level Above filter.
+                            # 0 – 10 for all other filters. """
+    # return None
 
 
 def GetAcquiredData(shape):
     """ This function will return the data from the last 
         acquisition. The data are returned as long integers 
-        (32-bit signed integers). The “array” must be large 
+        (32-bit signed integers). The "array" must be large
         enough to hold the complete data set. """
     andor_solis.GetAcquiredData.restype = ctypes.c_uint
     size = np.prod(shape)
@@ -307,7 +307,7 @@ def GetAcquiredData(shape):
 
 def GetAcquiredData16(shape):
     """ 16-bit version of the GetAcquiredData function. 
-        The “array” must be large enough to hold the 
+        The "array" must be large enough to hold the
         complete data set. """
     andor_solis.GetAcquiredData16.restype = ctypes.c_uint
     size = np.prod(shape)
@@ -347,7 +347,7 @@ def GetAcquisitionProgress():
     return int(acc.value), int(series.value)
 
 def GetAcquisitionTimings():
-    """ This function will return the current “valid” acquisition 
+    """ This function will return the current "valid" acquisition
         timing information. This function should be used after 
         all the acquisitions settings have been set, e.g. 
         SetExposureTime, SetKineticCycleTime and SetReadMode etc. 
@@ -504,7 +504,7 @@ def GetCameraInformation(index):
     return int(information.value)
 
 def GetCameraSerialNumber():
-    """ This function will retrieve camera’s serial number. """
+    """ This function will retrieve camera's serial number. """
     andor_solis.GetCameraSerialNumber.restype = ctypes.c_uint
     number = ctypes.c_int()
     result = andor_solis.GetCameraSerialNumber(ctypes.byref(number))
@@ -875,11 +875,11 @@ def SetSingleTrack(center_row, height):
 
 @uint_winapi([ctypes.c_int, ctypes.c_int, ctypes.c_int])
 def SetCropMode(active, height, reserved):
-    """This function effectively reduces the dimensions of the CCD by excluding some rows or columns 
-    to achieve higher throughput. In isolated crop mode iXon, Newton and iKon cameras can operate in 
-    either Full Vertical Binning or Imaging read modes. iDus can operate in Full Vertical Binning read 
+    """This function effectively reduces the dimensions of the CCD by excluding some rows or columns
+    to achieve higher throughput. In isolated crop mode iXon, Newton and iKon cameras can operate in
+    either Full Vertical Binning or Imaging read modes. iDus can operate in Full Vertical Binning read
     mode only.
-    Note: It is important to ensure that no light falls on the excluded region otherwise the acquired 
+    Note: It is important to ensure that no light falls on the excluded region otherwise the acquired
     data will be corrupted.
      Parameters:
     int active: 1 – Crop mode is ON.
@@ -894,11 +894,11 @@ def SetCropMode(active, height, reserved):
 
 @uint_winapi([ctypes.c_int, ctypes.c_int,ctypes.c_int,ctypes.c_int,ctypes.c_int])
 def SetIsolatedCropMode(active, height, width, vbin, hbin):
-    """This function effectively reduces the dimensions of the CCD by excluding some rows or columns 
-    to achieve higher throughput. In isolated crop mode iXon, Newton and iKon cameras can operate in 
-    either Full Vertical Binning or Imaging read modes. iDus can operate in Full Vertical Binning read 
+    """This function effectively reduces the dimensions of the CCD by excluding some rows or columns
+    to achieve higher throughput. In isolated crop mode iXon, Newton and iKon cameras can operate in
+    either Full Vertical Binning or Imaging read modes. iDus can operate in Full Vertical Binning read
     mode only.
-    Note: It is important to ensure that no light falls on the excluded region otherwise the acquired 
+    Note: It is important to ensure that no light falls on the excluded region otherwise the acquired
     data will be corrupted.
      Parameters:
     int active: 1 – Crop mode is ON.
@@ -915,32 +915,32 @@ def SetIsolatedCropMode(active, height, width, vbin, hbin):
     """
     return None
 
-@uint_winapi([ctypes.c_int, ctypes.c_int,ctypes.c_int,ctypes.c_int,ctypes.c_int,ctypes.c_int,ctypes.c_int])
-def SetIsolatedCropModeEx(active, height, width, vbin, hbin, cropleft, cropbottom):
-    """This function effectively reduces the dimensions of the CCD by excluding some rows or columns 
-    to achieve higher throughput. In isolated crop mode iXon, Newton and iKon cameras can operate in 
-    either Full Vertical Binning or Imaging read modes. iDus can operate in Full Vertical Binning read 
-    mode only.
-    Note: It is important to ensure that no light falls on the excluded region otherwise the acquired 
-    data will be corrupted.
-     Parameters:
-    int active: 1 – Crop mode is ON.
-                0 – Crop mode is OFF.
+# @uint_winapi([ctypes.c_int, ctypes.c_int,ctypes.c_int,ctypes.c_int,ctypes.c_int,ctypes.c_int,ctypes.c_int])
+# def SetIsolatedCropModeEx(active, height, width, vbin, hbin, cropleft, cropbottom):
+    # """This function effectively reduces the dimensions of the CCD by excluding some rows or columns 
+    # to achieve higher throughput. In isolated crop mode iXon, Newton and iKon cameras can operate in 
+    # either Full Vertical Binning or Imaging read modes. iDus can operate in Full Vertical Binning read 
+    # mode only.
+    # Note: It is important to ensure that no light falls on the excluded region otherwise the acquired 
+    # data will be corrupted.
+     # Parameters:
+    # int active: 1 – Crop mode is ON.
+                # 0 – Crop mode is OFF.
 
-    int height: The selected crop height. This value must be between 1 and the CCD height.
+    # int height: The selected crop height. This value must be between 1 and the CCD height.
 
-    int cropwidth: The selected crop width. This value must be between 1 and the CCD width.
+    # int cropwidth: The selected crop width. This value must be between 1 and the CCD width.
 
-    int vbin: The selected vertical binning.
+    # int vbin: The selected vertical binning.
 
-    int hbin: The selected horizontal binning.
+    # int hbin: The selected horizontal binning.
 
-    int cropleft: crop left starting point
+    # int cropleft: crop left starting point
 
-    int cropbottom: crop bottom starting point
+    # int cropbottom: crop bottom starting point
 
-    """
-    return None
+    # """
+    # return None
 
 
 def GetFastestRecommendedVSSpeed():
@@ -1148,10 +1148,10 @@ def SetShutterEx(typ, mode, closingtime, openingtime, extmode):
         SHUTTER TRANSFER TIME). The mode and extmode parameters control the 
         behaviour of the internal and external shutters. To have an external 
         shutter open and close automatically in an experiment, set the mode 
-        parameter to “Open” and set the extmode parameter to “Auto”. To have 
+        parameter to "Open" and set the extmode parameter to "Auto". To have
         an internal shutter open and close automatically in an experiment, 
-        set the extmode parameter to “Open” and set the mode parameter to 
-        “Auto”. To not use any shutter in the experiment, set both shutter 
+        set the extmode parameter to "Open" and set the mode parameter to
+        "Auto". To not use any shutter in the experiment, set both shutter
         modes to permanently open. """
     return None
 
@@ -1174,7 +1174,7 @@ def SetTriggerMode(mode):
 @uint_winapi([ctypes.c_int])
 def SetFastExtTrigger(mode):
     """This function will enable fast external triggering. When fast external 
-    triggering is enabled the system will NOT wait until a “Keep Clean” cycle 
+    triggering is enabled the system will NOT wait until a "Keep Clean" cycle
     has been completed before accepting the next trigger. This setting will only 
     have an effect if the trigger mode has been set to External via SetTriggerMode.
     int mode: 0 Disabled 
@@ -1336,7 +1336,7 @@ def GetFKVShiftSpeedF(index):
     return float(speed.value)
 
 def GetFKExposureTime():
-    """ This function will return the current “valid” exposure time for a 
+    """ This function will return the current "valid" exposure time for a
         fast kinetics acquisition. This function should be used after all 
         the acquisitions settings have been set, i.e. SetFastKinetics and 
         SetFKVShiftSpeed. The value returned is the actual time used in 
